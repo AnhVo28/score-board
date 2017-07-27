@@ -1,3 +1,19 @@
+var PLAYERS =[
+  {
+    name: 'Jim Hoskins',
+    score: 32,
+  },
+  {
+    name: 'Andrew Master',
+    score: 10
+  },
+  {
+    name: 'Alena Holligan',
+    score: 20,
+  }
+]
+
+
 function Header(props) {
   return(
     <div className='header'>
@@ -35,8 +51,7 @@ class App extends React.Component {
       <div className='scoreboard'>
         <Header/>
           <div className='players'>
-            <Player name ='John Son' score ={32}/>
-            <Player name ='Jim Hoskin' score ={10}/>
+            {this.props.players.map((player, key)=> <Player key ={key} name={player.name} score={player.score} />)}
           </div>
       </div>
     );
@@ -45,5 +60,5 @@ class App extends React.Component {
 }
 
 ReactDOM.render(
-  <App/>, document.getElementById('container')
+  <App players={PLAYERS}/>, document.getElementById('container')
 )
