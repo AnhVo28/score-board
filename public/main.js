@@ -14,6 +14,29 @@ var PLAYERS =[
 ]
 
 
+
+class AddPlayerForm extends React.Component {
+
+  onSubmit(e){
+    e.preventDefault()
+    this.props.onAdd(this.input.value)
+    this.input.value=''
+  }
+
+  render() {
+    return (
+    <div className='add-player-form'>
+      <form onSubmit={this.onSubmit.bind(this)}>
+        <input type='text' placeholder='Enter the player name' ref={(input) => this.input = input}  ></input>
+        <input type='submit' value ='Add Player'></input>
+      </form>
+    </div>
+  )
+  }
+}
+
+
+
 function Header(props) {
   return(
     <div className='header'>
@@ -46,6 +69,7 @@ function Player(props) {
   return(
     <div className='player'>
       <div className='player-name'>
+        <a className= 'remove-player' onClick={props.onRemove}>x</a>
         {props.name}
       </div>
       <div className='player-score'>
@@ -88,6 +112,20 @@ class App extends React.Component {
      this.setState(this.state)
    }
 
+   onAdd(value){
+     this.state.players.push({
+       name: value,
+       score: 0
+     })
+     this.setState(this.state)
+
+   }
+
+   onRemove(index){
+     this.state.players.splice(index,1)
+     this.setState(this.state)
+   }
+
   render() {
     return (
       <div className='scoreboard'>
@@ -95,12 +133,14 @@ class App extends React.Component {
           <div className='players'>
             {this.state.players.map((player, key)=>
                 <Player
+                  onRemove={()=>this.onRemove(key)}
                   onScoreChange={(delta)=>this.onScoreChange(key, delta)}
                   key = {key}
                   name= {player.name}
                   score= {player.score} />
               )}
           </div>
+          <AddPlayerForm onAdd={this.onAdd.bind(this)}/>
       </div>
     );
   }
