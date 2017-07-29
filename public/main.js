@@ -42,6 +42,7 @@ function Header(props) {
     <div className='header'>
       <Stats players={props.players}/>
       <h1>Scoreboard</h1>
+      <Stopwatch />
     </div>
   )
 }
@@ -88,6 +89,75 @@ class Counter extends React.Component {
         <button onClick={()=>this.props.onScoreChange(-1)}  className='counter-action decrement'> - </button>
         <div className='counter-score' >{this.props.score}</div>
         <button onClick={()=>this.props.onScoreChange(1)}  className='counter-action increment'> + </button>
+      </div>
+    )
+  }
+}
+
+
+
+class Stopwatch extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      running: false,
+      elapsedTime: 0,
+      previousTime: 0,
+    }
+  }
+  componentDidMount() {
+    this.timerID = setInterval(this.onTick.bind(this), 100);
+  }
+
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  onTick() {
+    if (this.state.running) {
+      var now = Date.now();
+      this.setState({
+        previousTime: now,
+        elapsedTime: this.state.elapsedTime + (now - this.state.previousTime),
+      });
+    }
+    console.log('onTick');
+  }
+
+  onStart() {
+    this.setState({
+      running: true,
+      previousTime: Date.now(),
+    });
+  }
+
+  onStop() {
+    this.setState({ running: false });
+  }
+
+  onReset(){
+    this.setState({
+      elapsedTime: 0,
+      previousTime: Date.now(),
+    });
+  }
+
+
+  render () {
+    var startStop = this.state.running ? <button>stop</button> : <button>start</button>
+  var seconds = Math.floor(this.state.elapsedTime/1000)
+    return(
+      <div className='stopwatch'>
+        <h2>Stop watch</h2>
+        <div className='stopwatch-time'>{seconds}</div>
+        {
+          this.state.running ?
+            <button onClick={this.onStop.bind(this)}>stop</button>
+            :
+            <button onClick={this.onStart.bind(this)}>start</button>
+          }
+        <button onClick={this.onReset.bind(this)}>Reset</button>
       </div>
     )
   }
